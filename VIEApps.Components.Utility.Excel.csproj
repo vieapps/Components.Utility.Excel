@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.0</TargetFrameworks>
+		<WarningLevel>3</WarningLevel>
+		<DocumentationFile>bin/$(Configuration)/$(TargetFramework)/VIEApps.Components.Utility.Excel.xml</DocumentationFile>
+		<RootNamespace>net.vieapps.Components.Utility.Excel</RootNamespace>
+		<AssemblyName>VIEApps.Components.Utility.Excel</AssemblyName>
+		<AssemblyTitle>VIEApps NGX Utility</AssemblyTitle>
+		<AssemblyVersion>10.3$(ReleaseVersion)</AssemblyVersion>
+		<FileVersion>10.3$(ReleaseVersion)</FileVersion>
+		<InformationalVersion>10.3@$(TargetFramework)#sn:$(Sign)-$(ReleaseRevision)</InformationalVersion>
+		<Version>10.3$(ReleaseVersion)$(ReleaseSuffix)</Version>
+		<Product>VIEApps NGX</Product>
+		<Title>VIEApps NGX Utility</Title>
+		<Description>The tiny library for working with Excel documents in .NET Standard 2.x/.NET Core 3.0</Description>
+		<Copyright>© 2019 VIEApps.net</Copyright>
+		<Authors>VIEApps.net</Authors>
+		<Company>VIEApps.net</Company>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<SignAssembly>$(Sign)</SignAssembly>
+		<AssemblyOriginatorKeyFile>../VIEApps.Components.snk</AssemblyOriginatorKeyFile>
+		<DefineConstants>$(SignConstant)</DefineConstants>
+		<GeneratePackageOnBuild>$(GeneratePackage)</GeneratePackageOnBuild>
+		<PackageId>VIEApps.Components.Utility.Excel$(PackageSuffix)</PackageId>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageIcon>Icon.png</PackageIcon>
+		<PackageOutputPath>../</PackageOutputPath>
+		<PackageTags>utility;extensions;crypto;logging;encoding;secp256k1;ecc;rsa;vieapps;vieapps.components</PackageTags>
+		<PackageReleaseNotes>Upgrade to latest components with moved code from Utility project</PackageReleaseNotes>
+		<PackageProjectUrl>https://vieapps.net</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/vieapps/Components.Utility.Excel</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove=".DS_Store" />
+		<None Remove=".gitattributes" />
+		<None Remove=".gitignore" />
+		<None Remove="README.md" />
+		<None Visible="false" Include="LICENSE.md" Pack="true" PackagePath="\" />
+		<None Visible="false" Include="Icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DocumentFormat.OpenXml" Version="2.9.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(GeneratePackage)'!='true'">
+		<PackageReference Include="VIEApps.Components.Utility" Version="10.3.1911.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(GeneratePackage)'=='true'">
+		<PackageReference Include="VIEApps.Components.Utility$(PackageSuffix)" Version="10.3$(ReleaseVersion)" />
+	</ItemGroup>
+
+</Project>
