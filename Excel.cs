@@ -108,8 +108,6 @@ namespace net.vieapps.Components.Utility
 			var worksheet = worksheetPart.Worksheet;
 			var sheetData = worksheet.GetFirstChild<SheetData>();
 
-			var cellValue = "";
-
 			//  Create a Header Row in our Excel file, containing one header for each Column of data in our DataTable.
 			//
 			//  We'll also create an array, showing which type each column of data is (Text or Numeric), so when we come to write the actual
@@ -158,7 +156,7 @@ namespace net.vieapps.Components.Utility
 
 				for (var index = 0; index < numberOfColumns; index++)
 				{
-					cellValue = dataRow.ItemArray[index].ToString();
+					var cellValue = dataRow.ItemArray[index].ToString();
 
 					// Create cell with data
 					if (isNumericColumn[index])
@@ -181,7 +179,7 @@ namespace net.vieapps.Components.Utility
 
 		static void AppendTextCell(string cellReference, string cellStringValue, Row excelRow)
 		{
-			var cell = new Cell()
+			var cell = new Cell
 			{
 				CellReference = cellReference,
 				DataType = CellValues.String
@@ -197,7 +195,7 @@ namespace net.vieapps.Components.Utility
 
 		static void AppendNumericCell(string cellReference, string cellStringValue, Row excelRow)
 		{
-			var cell = new Cell()
+			var cell = new Cell
 			{
 				CellReference = cellReference
 			};
