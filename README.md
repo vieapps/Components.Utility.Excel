@@ -1,13 +1,11 @@
-# VIEApps.Components.Utility
+# VIEApps.Components.Utility.Excel
 
-The general purpose utility library for development apps with .NET Standard 2.x
+The tiny library for working with Excel documents on .NET
 
-- String extension methods
-- Date-Time extension methods
-- Collection extension methods
-- Crypto extension methods
-- ... and others
+- Save a DataSet object to an Excel document (xlsx)
+- Read an Excel document as a DataSet object
+- Extension methods: convert objects too DataTable and vice versa
 
 ## NuGet
 
-[![NuGet](https://img.shields.io/nuget/v/VIEApps.Components.Utility.svg)](https://www.nuget.org/packages/VIEApps.Components.Utility)
+[![NuGet](https://img.shields.io/nuget/v/VIEApps.Components.Utility.Excel.svg)](https://www.nuget.org/packages/VIEApps.Components.Utility.Excel)

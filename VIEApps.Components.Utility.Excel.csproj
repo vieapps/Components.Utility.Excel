@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp2.1;netcoreapp3.1;net5.0</TargetFrameworks>
 		<WarningLevel>3</WarningLevel>
+		<NoWarn>1573,1591</NoWarn>
 		<DocumentationFile>bin/$(Configuration)/$(TargetFramework)/VIEApps.Components.Utility.Excel.xml</DocumentationFile>
 		<RootNamespace>net.vieapps.Components.Utility.Excel</RootNamespace>
 		<AssemblyName>VIEApps.Components.Utility.Excel</AssemblyName>
@@ -13,7 +14,7 @@
 		<Version>10.3$(ReleaseVersion)$(ReleaseSuffix)</Version>
 		<Product>VIEApps NGX</Product>
 		<Title>VIEApps NGX Utility</Title>
-		<Description>The tiny library for working with Excel documents in .NET Standard 2.x/.NET Core 2.x+</Description>
+		<Description>The tiny library for working with Excel documents in .NET</Description>
 		<Copyright>© 2020 VIEApps.net</Copyright>
 		<Authors>VIEApps.net</Authors>
 		<Company>VIEApps.net</Company>
@@ -31,7 +32,7 @@
 		<PackageIcon>Icon.png</PackageIcon>
 		<PackageOutputPath>../</PackageOutputPath>
 		<PackageTags>utility;extensions;excel;opendocuments;vieapps;vieapps.components</PackageTags>
-		<PackageReleaseNotes>Upgrade to latest components</PackageReleaseNotes>
+		<PackageReleaseNotes>Use ExcelDataReader package for reading Excel file as DataSet object</PackageReleaseNotes>
 		<PackageProjectUrl>https://vieapps.net</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/vieapps/Components.Utility.Excel</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -47,9 +48,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
-		<PackageReference Include="VIEApps.Components.Utility" Version="10.3.2009.3" Condition="'$(GeneratePackage)' != 'true'" />
-		<PackageReference Include="VIEApps.Components.Utility$(PackageSuffix)" Version="10.3$(ReleaseVersion)" Condition="'$(GeneratePackage)' == 'true'" />
+		<PackageReference Include="DocumentFormat.OpenXml" Version="2.12.0" />
+		<PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+		<PackageReference Include="VIEApps.Components.Repository" Version="10.3.2012.2"  Condition="'$(GeneratePackage)' != 'true'" />
+		<PackageReference Include="VIEApps.Components.Repository$(PackageSuffix)" Version="10.3$(ReleaseVersion)" Condition="'$(GeneratePackage)' == 'true'" />
 	</ItemGroup>
 
 </Project>
