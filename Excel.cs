@@ -453,9 +453,10 @@ namespace net.vieapps.Components.Utility
 		/// <typeparam name="T"></typeparam>
 		/// <param name="dataTable"></param>
 		/// <param name="repositoryEntityID"></param>
+		/// <param name="whenCopyDataGotError"></param>
 		/// <param name="onCompleted"></param>
 		/// <returns></returns>
-		public static IEnumerable<T> ToObjects<T>(this DataTable dataTable, string repositoryEntityID = null, Action<IEnumerable<T>> onCompleted = null) where T : class
+		public static IEnumerable<T> ToObjects<T>(this DataTable dataTable, string repositoryEntityID = null, Action<T, string, object, Exception> whenCopyDataGotError = null, Action<IEnumerable<T>> onCompleted = null) where T : class
 		{
 			var objects = new List<T>();
 			var definition = RepositoryMediator.GetEntityDefinition<T>(false);
@@ -466,7 +467,7 @@ namespace net.vieapps.Components.Utility
 					? definition.BusinessRepositoryEntities[repositoryEntityID].ExtendedPropertyDefinitions
 					: new List<ExtendedPropertyDefinition>()).ToDictionary(attribute => attribute.Name);
 				foreach (DataRow dataRow in dataTable.Rows)
-					objects.Add(ObjectService.CreateInstance<T>().Copy(dataRow, standardAttributes, extendedAttributes));
+					objects.Add(ObjectService.CreateInstance<T>().Copy(dataRow, standardAttributes, extendedAttributes, whenCopyDataGotError));
 			}
 			else
 			{
@@ -477,13 +478,17 @@ namespace net.vieapps.Components.Utility
 					for (var index = 0; index < dataTable.Columns.Count; index++)
 					{
 						var name = dataTable.Columns[index].ColumnName;
-						var value = dataRow[name];
-						if (value != null && attributes.Contains(name))
-							@object.SetAttributeValue(name, value);
+						if (attributes.Contains(name))
+						{
+							var value = dataRow[name];
+							if (value != null)
+								@object.SetAttributeValue(name, value);
+						}
 					}
 					objects.Add(@object);
 				}
 			}
+			objects = objects.Where(@object => @object != null).ToList();
 			onCompleted?.Invoke(objects);
 			return objects;
 		}
@@ -494,11 +499,12 @@ namespace net.vieapps.Components.Utility
 		/// <typeparam name="T"></typeparam>
 		/// <param name="dataSet"></param>
 		/// <param name="repositoryEntityID"></param>
+		/// <param name="whenCopyDataGotError"></param>
 		/// <param name="onCompleted"></param>
 		/// <returns></returns>
-		public static IEnumerable<T> ToObjects<T>(this DataSet dataSet, string repositoryEntityID = null, Action<IEnumerable<T>> onCompleted = null) where T : class
+		public static IEnumerable<T> ToObjects<T>(this DataSet dataSet, string repositoryEntityID = null, Action<T, string, object, Exception> whenCopyDataGotError = null, Action<IEnumerable<T>> onCompleted = null) where T : class
 			=> dataSet != null && dataSet.Tables != null && dataSet.Tables.Count > 0
-				? dataSet.Tables[0].ToObjects(repositoryEntityID, onCompleted)
+				? dataSet.Tables[0].ToObjects(repositoryEntityID, whenCopyDataGotError, onCompleted)
 				: null;
 		#endregion
 
