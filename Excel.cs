@@ -337,7 +337,7 @@ namespace net.vieapps.Components.Utility
 				var standardAttributes = definition.Attributes.Where(attribute => !attribute.IsIgnored() && !attribute.IsIgnoredIfNull()).ToList();
 				standardAttributes.ForEach(attribute =>
 				{
-					var type = attribute.IsStoredAsJson() || attribute.IsEnumString() || attribute.IsMappings() || attribute.IsMultipleParentMappings() || attribute.IsChildrenMappings()
+					var type = attribute.IsStoredAsJson() || attribute.IsStringEnum() || attribute.IsMappings() || attribute.IsMultipleParentMappings() || attribute.IsChildrenMappings()
 						? typeof(string)
 						: attribute.Type;
 					dataTable.Columns.Add(attribute.Name, Nullable.GetUnderlyingType(type) ?? type);
@@ -384,6 +384,7 @@ namespace net.vieapps.Components.Utility
 		/// <returns></returns>
 		public static DataTable UpdateDataTable<T>(this DataTable dataTable, IEnumerable<T> objects, string repositoryEntityID = null, Action<DataTable> onCompleted = null) where T : class
 		{
+			var type = typeof(T);
 			var definition = RepositoryMediator.GetEntityDefinition<T>(false);
 			if (definition != null)
 			{
@@ -397,7 +398,7 @@ namespace net.vieapps.Components.Utility
 					standardAttributes.ForEach(attribute =>
 					{
 						var value = @object.GetAttributeValue(attribute);
-						if (attribute.IsEnumString())
+						if (attribute.IsStringEnum())
 							value = value?.ToString();
 						else if (attribute.IsStoredAsJson())
 							value = value != null
@@ -419,11 +420,18 @@ namespace net.vieapps.Components.Utility
 			}
 			else
 			{
-				var attributes = typeof(T).GetPublicAttributes();
+				var attributes = type.GetPublicAttributes(attribute => !attribute.IsStatic && attribute.CanRead);
 				objects?.ForEach(@object =>
 				{
 					var dataRow = dataTable.NewRow();
-					attributes.ForEach(attribute => dataRow[attribute.Name] = @object.GetAttributeValue(attribute) ?? DBNull.Value);
+					attributes.ForEach(attribute =>
+					{
+						try
+						{
+							dataRow[attribute.Name] = @object.GetAttributeValue(attribute) ?? DBNull.Value;
+						}
+						catch { }
+					});
 					dataTable.Rows.Add(dataRow);
 				});
 			}
@@ -458,6 +466,7 @@ namespace net.vieapps.Components.Utility
 		/// <returns></returns>
 		public static IEnumerable<T> ToObjects<T>(this DataTable dataTable, string repositoryEntityID = null, Action<T, string, object, Exception> whenCopyDataGotError = null, Action<IEnumerable<T>> onCompleted = null) where T : class
 		{
+			var type = typeof(T);
 			var objects = new List<T>();
 			var definition = RepositoryMediator.GetEntityDefinition<T>(false);
 			if (definition != null)
@@ -467,14 +476,14 @@ namespace net.vieapps.Components.Utility
 					? definition.BusinessRepositoryEntities[repositoryEntityID].ExtendedPropertyDefinitions
 					: new List<ExtendedPropertyDefinition>()).ToDictionary(attribute => attribute.Name);
 				foreach (DataRow dataRow in dataTable.Rows)
-					objects.Add(ObjectService.CreateInstance<T>().Copy(dataRow, standardAttributes, extendedAttributes, whenCopyDataGotError));
+					objects.Add(type.CreateInstance<T>().Copy(dataRow, standardAttributes, extendedAttributes, whenCopyDataGotError));
 			}
 			else
 			{
-				var attributes = typeof(T).GetPublicAttributes().Select(attribute => attribute.Name).ToHashSet();
+				var attributes = type.GetPublicAttributes(attribute => !attribute.IsStatic && attribute.CanWrite).Select(attribute => attribute.Name).ToHashSet();
 				foreach (DataRow dataRow in dataTable.Rows)
 				{
-					var @object = ObjectService.CreateInstance<T>();
+					var @object = type.CreateInstance<T>();
 					for (var index = 0; index < dataTable.Columns.Count; index++)
 					{
 						var name = dataTable.Columns[index].ColumnName;
