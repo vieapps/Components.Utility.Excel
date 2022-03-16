@@ -47,9 +47,7 @@ namespace net.vieapps.Components.Utility
 			// write dataset into stream
 			var stream = UtilityService.CreateMemoryStream();
 			using (var document = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook, true))
-			{
 				dataSet.WriteExcelDocument(document);
-			}
 			return stream;
 		}
 
@@ -251,37 +249,32 @@ namespace net.vieapps.Components.Utility
 		{
 			if (fileInfo == null || !fileInfo.Exists)
 				throw new FileNotFoundException();
-
 			using (var stream = File.Open(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
-			{
-				using (var reader = ExcelReaderFactory.CreateReader(stream, readerConfig))
+			using (var reader = ExcelReaderFactory.CreateReader(stream, readerConfig))
+				return reader.AsDataSet(datasetConfig ?? new ExcelDataSetConfiguration
 				{
-					return reader.AsDataSet(datasetConfig ?? new ExcelDataSetConfiguration
+					// gets or sets a value indicating whether to set the DataColumn.DataType property in a second pass
+					UseColumnDataType = true,
+
+					// gets or sets a callback to determine whether to include the current sheet in the DataSet, called once per sheet before ConfigureDataTable
+					FilterSheet = (tableReader, sheetIndex) => true,
+
+					// gets or sets a callback to obtain configuration options for a DataTable 
+					ConfigureDataTable = tableReader => new ExcelDataTableConfiguration
 					{
-						// gets or sets a value indicating whether to set the DataColumn.DataType property in a second pass
-						UseColumnDataType = true,
+						// gets or sets a value indicating the prefix of generated column names
+						EmptyColumnNamePrefix = "Column",
 
-						// gets or sets a callback to determine whether to include the current sheet in the DataSet, called once per sheet before ConfigureDataTable
-						FilterSheet = (tableReader, sheetIndex) => true,
+						// gets or sets a value indicating whether to use a row from the data as column names
+						UseHeaderRow = true,
 
-						// gets or sets a callback to obtain configuration options for a DataTable 
-						ConfigureDataTable = tableReader => new ExcelDataTableConfiguration
-						{
-							// gets or sets a value indicating the prefix of generated column names
-							EmptyColumnNamePrefix = "Column",
+						// gets or sets a callback to determine whether to include the  current row in the DataTable
+						FilterRow = rowReader => true,
 
-							// gets or sets a value indicating whether to use a row from the data as column names
-							UseHeaderRow = true,
-
-							// gets or sets a callback to determine whether to include the  current row in the DataTable
-							FilterRow = rowReader => true,
-
-							// gets or sets a callback to determine whether to include the specific column in the DataTable, called once per column after reading the headers
-							FilterColumn = (rowReader, columnIndex) => true
-						}
-					});
-				}
-			}
+						// gets or sets a callback to determine whether to include the specific column in the DataTable, called once per column after reading the headers
+						FilterColumn = (rowReader, columnIndex) => true
+					}
+				});
 		}
 
 		/// <summary>
