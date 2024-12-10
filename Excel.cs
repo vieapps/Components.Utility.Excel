@@ -467,7 +467,7 @@ namespace net.vieapps.Components.Utility
 				var standardAttributes = definition.Attributes.Where(attribute => !attribute.IsIgnored() && !attribute.IsIgnoredIfNull()).ToList().ToDictionary(attribute => attribute.Name);
 				var extendedAttributes = (!string.IsNullOrWhiteSpace(repositoryEntityID) && definition.BusinessRepositoryEntities.ContainsKey(repositoryEntityID)
 					? definition.BusinessRepositoryEntities[repositoryEntityID].ExtendedPropertyDefinitions
-					: new List<ExtendedPropertyDefinition>()).ToDictionary(attribute => attribute.Name);
+					: new List<ExtendedPropertyDefinition>())?.ToDictionary(attribute => attribute.Name);
 				foreach (DataRow dataRow in dataTable.Rows)
 					objects.Add(type.CreateInstance<T>().Copy(dataRow, standardAttributes, extendedAttributes, whenCopyDataGotError));
 			}
