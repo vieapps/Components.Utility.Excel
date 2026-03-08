@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net10.0;net8.0;netstandard2.0</TargetFrameworks>
 		<WarningLevel>3</WarningLevel>
 		<NoWarn>1573,1591,IDE0130,NU1701</NoWarn>
 		<DocumentationFile>bin/$(Configuration)/$(TargetFramework)/VIEApps.Components.Utility.Excel.xml</DocumentationFile>
@@ -33,7 +33,7 @@
 		<PackageIcon>Icon.png</PackageIcon>
 		<PackageOutputPath>../</PackageOutputPath>
 		<PackageTags>utility;extensions;excel;opendocuments;vieapps;vieapps.components</PackageTags>
-		<PackageReleaseNotes>Support .NET 10</PackageReleaseNotes>
+		<PackageReleaseNotes>Latest components</PackageReleaseNotes>
 		<PackageProjectUrl>https://vieapps.net</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/vieapps/Components.Utility.Excel</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -49,10 +49,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+		<PackageReference Include="DocumentFormat.OpenXml" Version="3.4.1" />
 		<PackageReference Include="ExcelDataReader.DataSet" Version="3.8.0" />
 		<PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
-		<PackageReference Include="VIEApps.Components.Repository" Version="10.10.2511.1" Condition="'$(GeneratePackage)' != 'true'" />
+		<PackageReference Include="VIEApps.Components.Repository" Version="10.10.2603.3" Condition="'$(GeneratePackage)' != 'true'" />
 		<PackageReference Include="VIEApps.Components.Repository$(PackageSuffix)" Version="10.10$(ReleaseVersion)" Condition="'$(GeneratePackage)' == 'true'" />
 	</ItemGroup>
 
